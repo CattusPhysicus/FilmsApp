@@ -1,0 +1,14 @@
+{
+  "name": "films",
+  "version": "1.0.0",
+  "description": "films collection",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "CattusPhysicus",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.1"
+  }
+}
