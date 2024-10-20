@@ -1,24 +1,44 @@
 const url = 'mongodb://localhost:27017/main';
-const { MongoClient } = require('mongodb');
-const client = new MongoClient(url);
-client.connect();
+const mongoose = require('mongoose');
+mongoose.connect(url);
 
 const express = require('express');
 const app = express();
 const port = 3000;
 app.use(express.json());
 
-app.get('/', (req, res) => {
-  res.send('This is the list of movies');
+const MovieSchema = new mongoose.Schema({
+  title: String,
+  year: Number,
+  rating: Number,
+});
+const Movie = mongoose.model('Movie', MovieSchema);
+
+const CategorySchema = new mongoose.Schema({
+  title: String,
 })
+const Category = mongoose.model('Category', CategorySchema);
 
 app.post('/movies', async (req, res) => {
   try {
-    await client.db('main').collection('movies').insertOne(req.body);
+    const movie = await Movie.create({ title: 'Matrix', year: 1999 });
     return res.status(201).send('movie created');
   } catch {
     return res.status(400).json('bad request');
   }
+})
+
+app.post('/categories', async (req, res) => {
+  try {
+    const category = await Category.create({ title: 'Sci-Fi' })
+    return res.status(201).send('category created');
+  } catch {
+    return res.status(400).json('bad request');
+  }
+})
+
+app.get('/', (req, res) => {
+  res.send('This is the list of movies');
 })
 
 app.put('/changemovie', (req, res) => {
@@ -27,15 +47,6 @@ app.put('/changemovie', (req, res) => {
 
 app.delete('/delmovie', (req, res) => {
   res.send('movie was deleted');
-})
-
-app.post('/categories', async (req, res) => {
-  try {
-    await client.db('main').collection('categories').insertOne(req.body);
-    return res.status(201).send('category created');
-  } catch {
-    return res.status(400).json('bad request');
-  }
 })
 
 app.listen(port, () => {
